@@ -20,6 +20,6 @@ trap ctrl_c INT
 
 while IFS= read -r INTERFACE
 do
-	sudo tcpdump -n -N -U -i $INTERFACE not stp -w - | tee $FILENAME | tcpdump not port 443 and not port 80 -n -N -r -
+	sudo tcpdump -n -N -U -i $INTERFACE not stp -w - | tee $FILENAME | tcpdump not port 443 and not port 80 -X -n -N -r -
 done < "$INPUT"
 
