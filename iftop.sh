@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-INPUT="interface.conf"
+INPUT="input_interface.conf"
 while IFS= read -r INTERFACE
 do
 	echo "Listening on interface: $INTERFACE"

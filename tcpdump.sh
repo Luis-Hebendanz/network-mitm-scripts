@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-INPUT="interface.conf"
+INPUT="input_interface.conf"
 COUNTER=0
 DIR="out/"
 FILENAME=$DIR$(date +%d.%m.%y)"_dump_"$COUNTER".pcap"

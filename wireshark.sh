@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 BACKUP_LOC="/tmp/prevous-iptables.rules"
+OUTPUT="output_interface.conf"
 
 function ctrl_c() {
         echo "** Trapped CTRL-C"
@@ -9,23 +10,20 @@ function ctrl_c() {
 	exit
 }
 
-INPUT="input_interface.conf"
+
 while IFS= read -r INTERFACE
 do
-	echo "Listening on interface: $INTERFACE"
-	# Back up current rules
 	sudo iptables-save > $BACKUP_LOC
 	sudo iptables -t nat -F # Flush all rules in nat
-
-	sudo iptables -t nat -A PREROUTING -i $INTERFACE -p tcp -m tcp --dport 80 -j REDIRECT --to-ports 8080
-	sudo iptables -t nat -A PREROUTING -i $INTERFACE -p tcp -m tcp --dport 443 -j REDIRECT --to-ports 8080
+	sudo iptables -t nat -A POSTROUTING -o $INTERFACE -j MASQUERADE
 
 	echo "[+] Changed iptable rules. Press CTRL+C to go reset changes"
 	echo "[*] Saved old rules to ${BACKUP_LOC}"
 	trap ctrl_c INT
-done < "$INPUT"
+done < "$OUTPUT"
 
-mitmproxy -T --host
+wireshark &>/dev/null
 
 echo "[*] Restoring old rules..."
 sudo iptables-restore < $BACKUP_LOC
+
